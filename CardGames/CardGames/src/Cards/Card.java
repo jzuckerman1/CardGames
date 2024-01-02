@@ -1,5 +1,6 @@
 package Cards;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 public class Card implements Comparable<Card>{
@@ -63,7 +64,7 @@ public class Card implements Comparable<Card>{
      * Allows the suit to be a private (and final) variable
      * @return an enumerated type of the suit.
      */
-    public Card.Suit getSuit(){
+    public Suit getSuit(){
         return this.suit;
     }
 
@@ -192,6 +193,37 @@ public class Card implements Comparable<Card>{
     }
 
     /**
+     * Uses the toString to print cards next to each other.
+     * @param cards Array of cards to print next to each other
+     * @param displayCards Optional input for showing hidden cards
+     * @return a string of all the cards next to one another.
+     */
+    public static String toStringAbreast(Card[] cards, int[] ...displayCards){
+        if(cards == null){return "";}
+        if(cards.length < 2){return "";}
+        String[] cardStrings = Arrays.stream(cards.clone()).map(Card::toString).toArray(String[]::new);
+        String[][] cardLineStrings = new String[cards.length][];
+        for(int i = 0; i < cards.length; i++){
+            if(displayCards.length == 0) {
+                cardLineStrings[i] = cardStrings[i].split("\n");
+            }
+            else if(!(displayCards[0][i] == 0)) {//Only look in the first array segment rather than passing many inputs
+                cardLineStrings[i] = cardStrings[i].split("\n");
+            } else{
+                cardLineStrings[i] = cards[i].hiddenCard().split("\n");
+            }
+        }
+        StringBuilder retval = new StringBuilder();
+        for(int i = 0; i < cardLineStrings[0].length; i++){//Number of rows in a card
+            for(int j = 0; j < cards.length; j++){
+                retval.append(cardLineStrings[j][i]).append("\t");
+            }
+            retval.append("\n");
+        }
+        return retval.toString();
+    }
+
+    /**
      * Shows a blank card if the card is hidden
      * @return an empty card
      */
@@ -205,8 +237,10 @@ public class Card implements Comparable<Card>{
         | ############ |
         | ############ |
         | ############ |
+        | ############ |
+        | ############ |
         ----------------
-                        """;
+                        """ + "\n";
     }
 
     static class Rank{
